@@ -1,10 +1,35 @@
-pipeline {
-    agent any
-    stages {
-        stage('Example') {
-            steps {
-                echo 'Hello World'
-            }
+3// pipeline {
+//     agent any
+//     stages {
+//         stage('Example') {
+//             steps {
+//                 echo 'Hello World'
+//             }
+//         }
+//     }
+// }
+
+// def remote = [:] remote.name = "node-1" remote.host = "185.50.203.10" remote.allowAnyHosts = true
+
+pipline{
+	agent any
+	stage('Build'){
+		steps{
+			echo "Build the up"
+			sh 'mvn -e clean install'
+			sh 'ls -l'
+		}
+	}
+	stage('Deploy'){
+		steps{
+		withCredentials([sshUserPrivateKey(credentialsId: 'tomcat-ssh', keyFileVariable: 'keyFile', passphraseVariable: 'passVar', usernameVariable: 'userVar')]) 	 {
+   			def remote = [name: 'vm885e1c', host: '185.50.203.10', user: user1, identityFile : keyFile, allowAnyHosts: true]
+   			ssh Command remote: remote, command: "Is -lrt"
+			ssh Command remote: remote, command: "for i in {1.5}; do echo -n \"Loop \$i \"; hostname -I ; sleep 1; done"
+			writeFile file: 'abc.sh', test: 'ls -lrt'
+			ssh Script remote: remote, script: "abc.sh"
+   			sshPut remote: remote, from: 'target/webApp1.war', into: '/opt/tomcat/webapps/'	
         }
     }
+	}
 }
