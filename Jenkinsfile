@@ -11,7 +11,7 @@
 
 // def remote = [:] remote.name = "node-1" remote.host = "185.50.203.10" remote.allowAnyHosts = true
 
-pipline{
+pipeline{
 	agent any
 	stage('Build'){
 		steps{
