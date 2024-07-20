@@ -28,7 +28,7 @@ pipeline {
                         def remote = [
                             name: 'vm885e1c',
                             host: '185.50.203.10',
-                            user: 'tomcat',
+                            user: 'user1',
                             identityFile: keyFile,
                             allowAnyHosts: true
                         ]
